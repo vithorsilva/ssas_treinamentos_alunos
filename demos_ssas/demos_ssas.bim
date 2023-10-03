@@ -1,0 +1,2175 @@
+{
+  "name": "SemanticModel",
+  "compatibilityLevel": 1600,
+  "model": {
+    "culture": "pt-BR",
+    "dataSources": [
+      {
+        "type": "structured",
+        "name": "SQL/DW",
+        "connectionDetails": {
+          "protocol": "tds",
+          "address": {
+            "server": "srv-mw001-treinamentos.database.windows.net",
+            "database": "AdventureWorksDW"
+          },
+          "authentication": null,
+          "query": null
+        },
+        "credential": {
+          "AuthenticationKind": "UsernamePassword",
+          "Username": "USR_BI_READ",
+          "EncryptConnection": true,
+          "PrivacySetting": "Organizational"
+        }
+      }
+    ],
+    "tables": [
+      {
+        "name": "DimDate",
+        "dataCategory": "Time",
+        "columns": [
+          {
+            "name": "DateKey",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "DateKey",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "FullDateAlternateKey",
+            "dataType": "dateTime",
+            "isKey": true,
+            "sourceColumn": "FullDateAlternateKey",
+            "formatString": "Short Date",
+            "displayFolder": "Colunas",
+            "annotations": [
+              {
+                "name": "Format",
+                "value": "<Format Format=\"DateTimeShortDatePattern\" />"
+              }
+            ]
+          },
+          {
+            "name": "DayNumberOfWeek",
+            "dataType": "int64",
+            "sourceColumn": "DayNumberOfWeek",
+            "displayFolder": "Colunas",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "EnglishDayNameOfWeek",
+            "dataType": "string",
+            "sourceColumn": "EnglishDayNameOfWeek",
+            "sortByColumn": "DayNumberOfWeek",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "DayNumberOfMonth",
+            "dataType": "int64",
+            "sourceColumn": "DayNumberOfMonth",
+            "displayFolder": "Colunas",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "EnglishMonthName",
+            "dataType": "string",
+            "sourceColumn": "EnglishMonthName",
+            "sortByColumn": "MonthNumberOfYear",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "MonthNumberOfYear",
+            "dataType": "int64",
+            "sourceColumn": "MonthNumberOfYear",
+            "displayFolder": "Colunas",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "CalendarQuarter",
+            "dataType": "int64",
+            "sourceColumn": "CalendarQuarter",
+            "displayFolder": "Colunas",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "CalendarYear",
+            "dataType": "int64",
+            "sourceColumn": "CalendarYear",
+            "displayFolder": "Colunas",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "FiscalQuarter",
+            "dataType": "int64",
+            "sourceColumn": "FiscalQuarter",
+            "displayFolder": "Colunas",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "FiscalYear",
+            "dataType": "int64",
+            "sourceColumn": "FiscalYear",
+            "displayFolder": "Colunas",
+            "summarizeBy": "none"
+          },
+          {
+            "type": "calculated",
+            "name": "Period",
+            "dataType": "string",
+            "isDataTypeInferred": true,
+            "expression": "FORMAT(DimDate[FullDateAlternateKey], \"mm/yyyy\")",
+            "sortByColumn": "PeriodNro"
+          },
+          {
+            "type": "calculated",
+            "name": "PeriodNro",
+            "dataType": "string",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "FORMAT(DimDate[FullDateAlternateKey], \"yyyymm\")"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/DW\",",
+                "    dbo_DimDate = Source{[Schema=\"dbo\",Item=\"DimDate\"]}[Data],",
+                "    #\"Removed Other Columns\" = Table.SelectColumns(dbo_DimDate,{\"DateKey\", \"FullDateAlternateKey\", \"DayNumberOfWeek\", \"EnglishDayNameOfWeek\", \"DayNumberOfMonth\", \"EnglishMonthName\", \"MonthNumberOfYear\", \"CalendarQuarter\", \"CalendarYear\", \"FiscalQuarter\", \"FiscalYear\", \"FactCallCenter\", \"FactCurrencyRate\", \"FactFinance\", \"FactInternetSales(DateKey) 2\", \"FactInternetSales(DateKey) 3\", \"FactProductInventory\", \"FactResellerSales(DateKey)\", \"FactResellerSales(DateKey) 2\", \"FactResellerSales(DateKey) 3\", \"FactSalesQuota\", \"FactSurveyResponse\"})",
+                "in",
+                "    #\"Removed Other Columns\""
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "DimEmployee",
+        "columns": [
+          {
+            "name": "EmployeeKey",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "EmployeeKey",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "ParentEmployeeKey",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "ParentEmployeeKey",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "EmployeeNationalIDAlternateKey",
+            "dataType": "string",
+            "sourceColumn": "EmployeeNationalIDAlternateKey",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "ParentEmployeeNationalIDAlternateKey",
+            "dataType": "string",
+            "sourceColumn": "ParentEmployeeNationalIDAlternateKey",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "DepartmentName",
+            "dataType": "string",
+            "sourceColumn": "DepartmentName",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "Employee",
+            "dataType": "string",
+            "sourceColumn": "Employee",
+            "displayFolder": "Colunas"
+          },
+          {
+            "type": "calculated",
+            "name": "HierarquiaCaminho",
+            "dataType": "string",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "PATH(DimEmployee[EmployeeKey],DimEmployee[ParentEmployeeKey])",
+            "displayFolder": "Colunas"
+          },
+          {
+            "type": "calculated",
+            "name": "Level1",
+            "dataType": "string",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "LOOKUPVALUE(DimEmployee[Employee], DimEmployee[EmployeeKey], PATHITEM(DimEmployee[HierarquiaCaminho],1,INTEGER))",
+            "displayFolder": "Colunas"
+          },
+          {
+            "type": "calculated",
+            "name": "Level2",
+            "dataType": "string",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "LOOKUPVALUE(DimEmployee[Employee], DimEmployee[EmployeeKey], PATHITEM(DimEmployee[HierarquiaCaminho],2,INTEGER))",
+            "displayFolder": "Colunas"
+          },
+          {
+            "type": "calculated",
+            "name": "Level3",
+            "dataType": "string",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "LOOKUPVALUE(DimEmployee[Employee], DimEmployee[EmployeeKey], PATHITEM(DimEmployee[HierarquiaCaminho],3,INTEGER))",
+            "displayFolder": "Colunas"
+          },
+          {
+            "type": "calculated",
+            "name": "Level4",
+            "dataType": "string",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": [
+              "",
+              "VAR varLevel = LOOKUPVALUE(DimEmployee[Employee], DimEmployee[EmployeeKey], PATHITEM(DimEmployee[HierarquiaCaminho],4,INTEGER))",
+              "RETURN IF(ISBLANK(varLevel), DimEmployee[Employee], varLevel)"
+            ],
+            "displayFolder": "Colunas"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/DW\",",
+                "    dbo_DimEmployee = Source{[Schema=\"dbo\",Item=\"DimEmployee\"]}[Data],",
+                "    #\"Removed Other Columns\" = Table.SelectColumns(dbo_DimEmployee,{\"EmployeeKey\", \"ParentEmployeeKey\", \"EmployeeNationalIDAlternateKey\", \"ParentEmployeeNationalIDAlternateKey\", \"FirstName\", \"LastName\", \"DepartmentName\", \"EmployeePhoto\", \"DimEmployee(EmployeeKey)\", \"DimEmployee(ParentEmployeeKey)\", \"DimSalesTerritory\", \"FactResellerSales\", \"FactSalesQuota\"}),",
+                "    #\"Merged Columns\" = Table.CombineColumns(#\"Removed Other Columns\",{\"FirstName\", \"LastName\"},Combiner.CombineTextByDelimiter(\" \", QuoteStyle.None),\"Employee\")",
+                "in",
+                "    #\"Merged Columns\""
+              ]
+            }
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "OrgLevels",
+            "displayFolder": "Hierarquias",
+            "hideMembers": "hideBlankMembers",
+            "levels": [
+              {
+                "name": "L1",
+                "ordinal": 0,
+                "column": "Level1"
+              },
+              {
+                "name": "L2",
+                "ordinal": 1,
+                "column": "Level2"
+              },
+              {
+                "name": "L3",
+                "ordinal": 2,
+                "column": "Level3"
+              },
+              {
+                "name": "L4",
+                "ordinal": 3,
+                "column": "Level4"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "DimGeography",
+        "columns": [
+          {
+            "name": "GeographyKey",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "GeographyKey",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "City",
+            "dataType": "string",
+            "sourceColumn": "City",
+            "displayFolder": "Colunas",
+            "dataCategory": "City"
+          },
+          {
+            "name": "StateProvinceCode",
+            "dataType": "string",
+            "sourceColumn": "StateProvinceCode",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "StateProvinceName",
+            "dataType": "string",
+            "sourceColumn": "StateProvinceName",
+            "displayFolder": "Colunas",
+            "dataCategory": "StateOrProvince"
+          },
+          {
+            "name": "CountryRegionCode",
+            "dataType": "string",
+            "sourceColumn": "CountryRegionCode",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "EnglishCountryRegionName",
+            "dataType": "string",
+            "sourceColumn": "EnglishCountryRegionName",
+            "displayFolder": "Colunas",
+            "dataCategory": "Country"
+          },
+          {
+            "name": "PostalCode",
+            "dataType": "string",
+            "sourceColumn": "PostalCode",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "SalesTerritoryKey",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SalesTerritoryKey",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "GeoCity",
+            "dataType": "string",
+            "sourceColumn": "GeoCity",
+            "displayFolder": "Colunas Geograficas",
+            "dataCategory": "Place"
+          },
+          {
+            "name": "GeoState",
+            "dataType": "string",
+            "sourceColumn": "GeoState",
+            "displayFolder": "Colunas Geograficas",
+            "dataCategory": "Place"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/DW\",",
+                "    dbo_DimGeography = Source{[Schema=\"dbo\",Item=\"DimGeography\"]}[Data],",
+                "    #\"Removed Other Columns\" = Table.SelectColumns(dbo_DimGeography,{\"GeographyKey\", \"City\", \"StateProvinceCode\", \"StateProvinceName\", \"CountryRegionCode\", \"EnglishCountryRegionName\", \"PostalCode\", \"SalesTerritoryKey\", \"DimCustomer\", \"DimReseller\", \"DimSalesTerritory\"}),",
+                "    #\"Coluna Mesclada Inserida\" = Table.AddColumn(#\"Removed Other Columns\", \"GeoCity\", each Text.Combine({[City], [StateProvinceName], [EnglishCountryRegionName]}, \", \"), type text),",
+                "    #\"Coluna Mesclada Inserida1\" = Table.AddColumn(#\"Coluna Mesclada Inserida\", \"GeoState\", each Text.Combine({[StateProvinceName], [EnglishCountryRegionName]}, \", \"), type text)",
+                "in",
+                "    #\"Coluna Mesclada Inserida1\""
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "DimReseller",
+        "columns": [
+          {
+            "name": "ResellerKey",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "ResellerKey",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "GeographyKey",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "GeographyKey",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "ResellerAlternateKey",
+            "dataType": "string",
+            "sourceColumn": "ResellerAlternateKey",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "Phone",
+            "dataType": "string",
+            "sourceColumn": "Phone",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "BusinessType",
+            "dataType": "string",
+            "sourceColumn": "BusinessType",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "ResellerName",
+            "dataType": "string",
+            "sourceColumn": "ResellerName",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "NumberEmployees",
+            "dataType": "int64",
+            "sourceColumn": "NumberEmployees",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "AddressLine1",
+            "dataType": "string",
+            "sourceColumn": "AddressLine1",
+            "displayFolder": "Colunas"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/DW\",",
+                "    dbo_DimReseller = Source{[Schema=\"dbo\",Item=\"DimReseller\"]}[Data],",
+                "    #\"Removed Other Columns\" = Table.SelectColumns(dbo_DimReseller,{\"ResellerKey\", \"GeographyKey\", \"ResellerAlternateKey\", \"Phone\", \"BusinessType\", \"ResellerName\", \"NumberEmployees\", \"AddressLine1\", \"DimGeography\", \"FactResellerSales\"})",
+                "in",
+                "    #\"Removed Other Columns\""
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "FactResellerSales",
+        "columns": [
+          {
+            "name": "ProductKey",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "ProductKey",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "OrderDateKey",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "OrderDateKey",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "ShipDateKey",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "ShipDateKey",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "ResellerKey",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "ResellerKey",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "EmployeeKey",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "EmployeeKey",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "SalesOrderNumber",
+            "dataType": "string",
+            "sourceColumn": "SalesOrderNumber",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "SalesOrderLineNumber",
+            "dataType": "int64",
+            "sourceColumn": "SalesOrderLineNumber",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "OrderQuantity",
+            "dataType": "int64",
+            "sourceColumn": "OrderQuantity",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "UnitPrice",
+            "dataType": "decimal",
+            "sourceColumn": "UnitPrice",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "ExtendedAmount",
+            "dataType": "decimal",
+            "sourceColumn": "ExtendedAmount",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "UnitPriceDiscountPct",
+            "dataType": "double",
+            "sourceColumn": "UnitPriceDiscountPct",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "DiscountAmount",
+            "dataType": "double",
+            "sourceColumn": "DiscountAmount",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "ProductStandardCost",
+            "dataType": "decimal",
+            "sourceColumn": "ProductStandardCost",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "TotalProductCost",
+            "dataType": "decimal",
+            "sourceColumn": "TotalProductCost",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "SalesAmount",
+            "dataType": "decimal",
+            "sourceColumn": "SalesAmount",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "TaxAmt",
+            "dataType": "decimal",
+            "sourceColumn": "TaxAmt",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "Freight",
+            "dataType": "decimal",
+            "sourceColumn": "Freight",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "OrderDate",
+            "dataType": "dateTime",
+            "sourceColumn": "OrderDate",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "ShipDate",
+            "dataType": "dateTime",
+            "isHidden": true,
+            "sourceColumn": "ShipDate",
+            "displayFolder": "Colunas"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/DW\",",
+                "    dbo_FactResellerSales = Source{[Schema=\"dbo\",Item=\"FactResellerSales\"]}[Data],",
+                "    #\"Removed Other Columns\" = Table.SelectColumns(dbo_FactResellerSales,{\"ProductKey\", \"OrderDateKey\", \"ShipDateKey\", \"ResellerKey\", \"EmployeeKey\", \"SalesOrderNumber\", \"SalesOrderLineNumber\", \"OrderQuantity\", \"UnitPrice\", \"ExtendedAmount\", \"UnitPriceDiscountPct\", \"DiscountAmount\", \"ProductStandardCost\", \"TotalProductCost\", \"SalesAmount\", \"TaxAmt\", \"Freight\", \"OrderDate\", \"ShipDate\", \"DimCurrency\", \"DimDate(DueDateKey)\", \"DimDate(OrderDateKey)\", \"DimDate(ShipDateKey)\", \"DimEmployee\", \"DimProduct\", \"DimPromotion\", \"DimReseller\", \"DimSalesTerritory\"})",
+                "in",
+                "    #\"Removed Other Columns\""
+              ]
+            }
+          }
+        ],
+        "measures": [
+          {
+            "name": "Lojas - Total Vendido",
+            "expression": " SUM(FactResellerSales[SalesAmount])",
+            "formatString": "\\$ #,0;-\\$ #,0;\\$ #,0",
+            "displayFolder": "Indicadores",
+            "annotations": [
+              {
+                "name": "Format",
+                "value": "<Format Format=\"Currency\"><Currency LCID=\"4096\" DisplayName=\"$ Lakota (Estados Unidos)\" Symbol=\"$\" PositivePattern=\"2\" NegativePattern=\"9\" /></Format>"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "DimProduct",
+        "columns": [
+          {
+            "name": "ProductKey",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "ProductKey",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "ProductAlternateKey",
+            "dataType": "string",
+            "sourceColumn": "ProductAlternateKey",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "ProductName",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "ProductName",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "StandardCost",
+            "dataType": "double",
+            "sourceColumn": "StandardCost",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "Color",
+            "dataType": "string",
+            "sourceColumn": "Color",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "ListPrice",
+            "dataType": "double",
+            "sourceColumn": "ListPrice",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "Size",
+            "dataType": "string",
+            "sourceColumn": "Size",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "SizeRange",
+            "dataType": "string",
+            "sourceColumn": "SizeRange",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "Weight",
+            "dataType": "double",
+            "sourceColumn": "Weight",
+            "displayFolder": "Colunas",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "ProductLine",
+            "dataType": "string",
+            "sourceColumn": "ProductLine",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "Class",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "Class",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "Style",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "Style",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "ModelName",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "ModelName",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "ProductDescription",
+            "dataType": "string",
+            "sourceColumn": "ProductDescription",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "ProductSubCategory",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "ProductSubCategory",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "ProductCategory",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "ProductCategory",
+            "displayFolder": "Colunas"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = Value.NativeQuery(#\"SQL/DW\", ",
+                "\"",
+                "SELECT ",
+                "\t p.ProductKey",
+                "\t,p.ProductAlternateKey",
+                "\t,p.EnglishProductName as ProductName",
+                "\t,p.StandardCost",
+                "\t,p.Color",
+                "\t,p.ListPrice",
+                "\t,p.Size",
+                "\t,p.SizeRange",
+                "\t,p.Weight",
+                "\t,p.ProductLine",
+                "\t,p.Class",
+                "\t,p.Style",
+                "\t,p.ModelName",
+                "\t,p.LargePhoto",
+                "\t,p.EnglishDescription ProductDescription",
+                "\t,ISNULL(psc.EnglishProductSubcategoryName, 'N/A') ProductSubCategory",
+                "\t,ISNULL(pc.EnglishProductCategoryName, 'N/A') ProductCategory",
+                "FROM dbo.DimProduct p",
+                "LEFT JOIN dbo.DimProductSubcategory psc ON psc.ProductSubcategoryKey = p.ProductSubcategoryKey",
+                "LEFT JOIN dbo.DimProductCategory pc ON pc.ProductCategoryKey = psc.ProductCategoryKey",
+                "\")",
+                "in",
+                "    Source"
+              ]
+            }
+          }
+        ],
+        "measures": [
+          {
+            "name": "Product - SKU - Total",
+            "expression": "COUNTROWS(DimProduct)",
+            "displayFolder": "Medidas"
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "Category-SubCategory-Product",
+            "displayFolder": "Hierarquias",
+            "levels": [
+              {
+                "name": "Category",
+                "ordinal": 0,
+                "column": "ProductCategory"
+              },
+              {
+                "name": "SubCategory",
+                "ordinal": 1,
+                "column": "ProductSubCategory"
+              },
+              {
+                "name": "Product",
+                "ordinal": 2,
+                "column": "ProductName"
+              }
+            ]
+          },
+          {
+            "name": "Model-Style-Class",
+            "displayFolder": "Hierarquias",
+            "levels": [
+              {
+                "name": "Model",
+                "ordinal": 0,
+                "column": "ModelName"
+              },
+              {
+                "name": "Style",
+                "ordinal": 1,
+                "column": "Style"
+              },
+              {
+                "name": "Class",
+                "ordinal": 2,
+                "column": "Class"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "FactInternetSales",
+        "columns": [
+          {
+            "name": "ProductKey",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "ProductKey",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "OrderDateKey",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "OrderDateKey",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "DueDateKey",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "DueDateKey",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "ShipDateKey",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "ShipDateKey",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "CustomerKey",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "CustomerKey",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "PromotionKey",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "PromotionKey",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "CurrencyKey",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "CurrencyKey",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "SalesTerritoryKey",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SalesTerritoryKey",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "SalesOrderNumber",
+            "dataType": "string",
+            "sourceColumn": "SalesOrderNumber",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "SalesOrderLineNumber",
+            "dataType": "int64",
+            "sourceColumn": "SalesOrderLineNumber",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "RevisionNumber",
+            "dataType": "int64",
+            "sourceColumn": "RevisionNumber",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "OrderQuantity",
+            "dataType": "int64",
+            "sourceColumn": "OrderQuantity",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "UnitPrice",
+            "dataType": "decimal",
+            "sourceColumn": "UnitPrice",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "ExtendedAmount",
+            "dataType": "decimal",
+            "sourceColumn": "ExtendedAmount",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "UnitPriceDiscountPct",
+            "dataType": "double",
+            "sourceColumn": "UnitPriceDiscountPct",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "DiscountAmount",
+            "dataType": "double",
+            "sourceColumn": "DiscountAmount",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "ProductStandardCost",
+            "dataType": "decimal",
+            "sourceColumn": "ProductStandardCost",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "TotalProductCost",
+            "dataType": "decimal",
+            "sourceColumn": "TotalProductCost",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "SalesAmount",
+            "dataType": "decimal",
+            "sourceColumn": "SalesAmount",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "TaxAmt",
+            "dataType": "decimal",
+            "sourceColumn": "TaxAmt",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "Freight",
+            "dataType": "decimal",
+            "sourceColumn": "Freight",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "CarrierTrackingNumber",
+            "dataType": "string",
+            "sourceColumn": "CarrierTrackingNumber",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "CustomerPONumber",
+            "dataType": "string",
+            "sourceColumn": "CustomerPONumber",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "OrderDate",
+            "dataType": "dateTime",
+            "sourceColumn": "OrderDate",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "DueDate",
+            "dataType": "dateTime",
+            "sourceColumn": "DueDate",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "ShipDate",
+            "dataType": "dateTime",
+            "sourceColumn": "ShipDate",
+            "displayFolder": "Colunas"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/DW\",",
+                "    dbo_FactInternetSales = Source{[Schema=\"dbo\",Item=\"FactInternetSales\"]}[Data]",
+                "in",
+                "    dbo_FactInternetSales"
+              ]
+            }
+          }
+        ],
+        "measures": [
+          {
+            "name": "Internet - Total Sales",
+            "expression": "SUM(FactInternetSales[SalesAmount])",
+            "formatString": "\\$#,0;(\\$#,0);\\$#,0",
+            "displayFolder": "Indicadores",
+            "annotations": [
+              {
+                "name": "Format",
+                "value": "<Format Format=\"Currency\"><Currency LCID=\"1033\" DisplayName=\"$ Inglês (Estados Unidos)\" Symbol=\"$\" PositivePattern=\"0\" NegativePattern=\"0\" /></Format>"
+              }
+            ]
+          },
+          {
+            "name": "Internet - Order Count",
+            "expression": "DISTINCTCOUNT(FactInternetSales[SalesOrderNumber])",
+            "formatString": "#,0",
+            "displayFolder": "Indicadores"
+          },
+          {
+            "name": "Internet - Ticket Average Price",
+            "expression": " DIVIDE([Internet - Total Sales], [Internet - Order Count])",
+            "formatString": "\\$#,0.00;(\\$#,0.00);\\$#,0.00",
+            "displayFolder": "Indicadores",
+            "annotations": [
+              {
+                "name": "Format",
+                "value": "<Format Format=\"Currency\" Accuracy=\"2\"><Currency LCID=\"1033\" DisplayName=\"$ Inglês (Estados Unidos)\" Symbol=\"$\" PositivePattern=\"0\" NegativePattern=\"0\" /></Format>"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "DimSalesTerritory",
+        "columns": [
+          {
+            "name": "SalesTerritoryKey",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SalesTerritoryKey",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "SalesTerritoryAlternateKey",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SalesTerritoryAlternateKey",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "SalesTerritoryRegion",
+            "dataType": "string",
+            "sourceColumn": "SalesTerritoryRegion",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "SalesTerritoryCountry",
+            "dataType": "string",
+            "sourceColumn": "SalesTerritoryCountry",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "SalesTerritoryGroup",
+            "dataType": "string",
+            "sourceColumn": "SalesTerritoryGroup",
+            "displayFolder": "Colunas"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/DW\",",
+                "    dbo_DimSalesTerritory = Source{[Schema=\"dbo\",Item=\"DimSalesTerritory\"]}[Data]",
+                "in",
+                "    dbo_DimSalesTerritory"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "DimCustomer",
+        "columns": [
+          {
+            "name": "CustomerKey",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "CustomerKey",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "GeographyKey",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "GeographyKey",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "CustomerAlternateKey",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "CustomerAlternateKey",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "Title",
+            "dataType": "string",
+            "sourceColumn": "Title",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "FirstName",
+            "dataType": "string",
+            "sourceColumn": "FirstName",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "MiddleName",
+            "dataType": "string",
+            "sourceColumn": "MiddleName",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "LastName",
+            "dataType": "string",
+            "sourceColumn": "LastName",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "NameStyle",
+            "dataType": "boolean",
+            "sourceColumn": "NameStyle",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "BirthDate",
+            "dataType": "dateTime",
+            "sourceColumn": "BirthDate",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "MaritalStatus",
+            "dataType": "string",
+            "sourceColumn": "MaritalStatus",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "Suffix",
+            "dataType": "string",
+            "sourceColumn": "Suffix",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "Gender",
+            "dataType": "string",
+            "sourceColumn": "Gender",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "EmailAddress",
+            "dataType": "string",
+            "sourceColumn": "EmailAddress",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "YearlyIncome",
+            "dataType": "decimal",
+            "sourceColumn": "YearlyIncome",
+            "formatString": "\\$#,0;(\\$#,0);\\$#,0",
+            "displayFolder": "Colunas",
+            "summarizeBy": "average",
+            "annotations": [
+              {
+                "name": "Format",
+                "value": "<Format Format=\"Currency\" ThousandSeparator=\"True\"><Currency LCID=\"1033\" DisplayName=\"$ Inglês (Estados Unidos)\" Symbol=\"$\" PositivePattern=\"0\" NegativePattern=\"0\" /></Format>"
+              }
+            ]
+          },
+          {
+            "name": "TotalChildren",
+            "dataType": "int64",
+            "sourceColumn": "TotalChildren",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "NumberChildrenAtHome",
+            "dataType": "int64",
+            "sourceColumn": "NumberChildrenAtHome",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "EnglishEducation",
+            "dataType": "string",
+            "sourceColumn": "EnglishEducation",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "SpanishEducation",
+            "dataType": "string",
+            "sourceColumn": "SpanishEducation",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "FrenchEducation",
+            "dataType": "string",
+            "sourceColumn": "FrenchEducation",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "EnglishOccupation",
+            "dataType": "string",
+            "sourceColumn": "EnglishOccupation",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "SpanishOccupation",
+            "dataType": "string",
+            "sourceColumn": "SpanishOccupation",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "FrenchOccupation",
+            "dataType": "string",
+            "sourceColumn": "FrenchOccupation",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "HouseOwnerFlag",
+            "dataType": "string",
+            "sourceColumn": "HouseOwnerFlag",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "NumberCarsOwned",
+            "dataType": "int64",
+            "sourceColumn": "NumberCarsOwned",
+            "displayFolder": "Colunas",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "AddressLine1",
+            "dataType": "string",
+            "sourceColumn": "AddressLine1",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "AddressLine2",
+            "dataType": "string",
+            "sourceColumn": "AddressLine2",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "Phone",
+            "dataType": "string",
+            "sourceColumn": "Phone",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "DateFirstPurchase",
+            "dataType": "dateTime",
+            "sourceColumn": "DateFirstPurchase",
+            "displayFolder": "Colunas"
+          },
+          {
+            "name": "CommuteDistance",
+            "dataType": "string",
+            "sourceColumn": "CommuteDistance",
+            "displayFolder": "Colunas"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/DW\",",
+                "    dbo_DimCustomer = Source{[Schema=\"dbo\",Item=\"DimCustomer\"]}[Data]",
+                "in",
+                "    dbo_DimCustomer"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "DimDateShip",
+        "dataCategory": "Time",
+        "columns": [
+          {
+            "type": "calculatedTableColumn",
+            "name": "ShipDate",
+            "dataType": "dateTime",
+            "isNameInferred": false,
+            "isDataTypeInferred": true,
+            "isKey": true,
+            "sourceColumn": "[Date]",
+            "formatString": "Short Date",
+            "displayFolder": "Colunas",
+            "annotations": [
+              {
+                "name": "Format",
+                "value": "<Format Format=\"DateTimeShortDatePattern\" />"
+              }
+            ]
+          },
+          {
+            "type": "calculatedTableColumn",
+            "name": "Dia",
+            "dataType": "int64",
+            "isNameInferred": true,
+            "isDataTypeInferred": true,
+            "sourceColumn": "[Dia]",
+            "displayFolder": "Colunas"
+          },
+          {
+            "type": "calculatedTableColumn",
+            "name": "MesNro",
+            "dataType": "int64",
+            "isNameInferred": true,
+            "isDataTypeInferred": true,
+            "sourceColumn": "[MesNro]",
+            "displayFolder": "Colunas"
+          },
+          {
+            "type": "calculatedTableColumn",
+            "name": "Mês",
+            "dataType": "string",
+            "isNameInferred": true,
+            "isDataTypeInferred": true,
+            "sourceColumn": "[Mês]",
+            "displayFolder": "Colunas"
+          },
+          {
+            "type": "calculatedTableColumn",
+            "name": "Ano",
+            "dataType": "int64",
+            "isNameInferred": true,
+            "isDataTypeInferred": true,
+            "sourceColumn": "[Ano]",
+            "displayFolder": "Colunas"
+          },
+          {
+            "type": "calculatedTableColumn",
+            "name": "CompetenciaNro",
+            "dataType": "string",
+            "isNameInferred": true,
+            "isDataTypeInferred": true,
+            "sourceColumn": "[CompetenciaNro]",
+            "displayFolder": "Colunas"
+          },
+          {
+            "type": "calculatedTableColumn",
+            "name": "Competencia",
+            "dataType": "string",
+            "isNameInferred": true,
+            "isDataTypeInferred": true,
+            "sourceColumn": "[Competencia]",
+            "displayFolder": "Colunas"
+          },
+          {
+            "type": "calculatedTableColumn",
+            "name": "SemanaAno",
+            "dataType": "int64",
+            "isNameInferred": true,
+            "isDataTypeInferred": true,
+            "sourceColumn": "[SemanaAno]",
+            "displayFolder": "Colunas"
+          },
+          {
+            "type": "calculatedTableColumn",
+            "name": "DiaSemanaNro",
+            "dataType": "int64",
+            "isNameInferred": true,
+            "isDataTypeInferred": true,
+            "sourceColumn": "[DiaSemanaNro]",
+            "displayFolder": "Colunas"
+          },
+          {
+            "type": "calculatedTableColumn",
+            "name": "DiaSemana",
+            "dataType": "string",
+            "isNameInferred": true,
+            "isDataTypeInferred": true,
+            "sourceColumn": "[DiaSemana]",
+            "displayFolder": "Colunas"
+          },
+          {
+            "type": "calculatedTableColumn",
+            "name": "Trimestre",
+            "dataType": "string",
+            "isNameInferred": true,
+            "isDataTypeInferred": true,
+            "sourceColumn": "[Trimestre]",
+            "displayFolder": "Colunas"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "CalculatedTable 1",
+            "source": {
+              "type": "calculated",
+              "expression": [
+                " ",
+                "VAR vDataInicio = MIN(FactInternetSales[DueDate])",
+                "VAR vDataFinal = MAX(FactInternetSales[DueDate])",
+                "RETURN ADDCOLUMNS(CALENDAR(vDataInicio, vDataFinal),",
+                "        \"Dia\",DAY([Date]),",
+                "        \"MesNro\",MONTH([Date]),",
+                "        \"Mês\",FORMAT([Date],\"mmmm\"),",
+                "        \"Ano\",YEAR([Date]),",
+                "        \"CompetenciaNro\",FORMAT([Date],\"yyyymm\"),",
+                "        \"Competencia\",FORMAT([Date],\"mm/yyyy\"),",
+                "        \"SemanaAno\",WEEKNUM([Date],1),",
+                "        \"DiaSemanaNro\",WEEKDAY([Date],1),",
+                "        \"DiaSemana\",FORMAT([Date],\"dddd\"),",
+                "        \"Trimestre\",CONCATENATE(ROUNDUP(DIVIDE(MONTH([Date]),3),0),\" Tri\"))",
+                ""
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "relationships": [
+      {
+        "name": "1b615c53-3005-4c0c-9911-8721bb369e3d",
+        "fromTable": "FactResellerSales",
+        "fromColumn": "ShipDateKey",
+        "toTable": "DimDate",
+        "toColumn": "DateKey",
+        "isActive": false
+      },
+      {
+        "name": "02341d39-8810-4400-b0d1-2d0b475774d3",
+        "fromTable": "FactResellerSales",
+        "fromColumn": "OrderDateKey",
+        "toTable": "DimDate",
+        "toColumn": "DateKey"
+      },
+      {
+        "name": "7e4e4f7f-97ae-4614-aac0-0d3b5b63c1ed",
+        "fromTable": "FactResellerSales",
+        "fromColumn": "EmployeeKey",
+        "toTable": "DimEmployee",
+        "toColumn": "EmployeeKey"
+      },
+      {
+        "name": "0fa74a0c-e6a0-4d5b-9309-9826f5f7dc2d",
+        "fromTable": "DimReseller",
+        "fromColumn": "GeographyKey",
+        "toTable": "DimGeography",
+        "toColumn": "GeographyKey"
+      },
+      {
+        "name": "515170db-f118-4867-b1f4-2fad0411bee7",
+        "fromTable": "FactResellerSales",
+        "fromColumn": "ResellerKey",
+        "toTable": "DimReseller",
+        "toColumn": "ResellerKey"
+      },
+      {
+        "name": "550d7ea7-0205-4b90-8c61-5ae1162ef695",
+        "fromTable": "FactResellerSales",
+        "fromColumn": "ProductKey",
+        "toTable": "DimProduct",
+        "toColumn": "ProductKey"
+      },
+      {
+        "name": "605b5f17-d4b7-4039-a09b-334e100341dc",
+        "fromTable": "FactInternetSales",
+        "fromColumn": "SalesTerritoryKey",
+        "toTable": "DimSalesTerritory",
+        "toColumn": "SalesTerritoryKey"
+      },
+      {
+        "name": "424de6be-f68a-4f1d-b859-bc90bdf6bb13",
+        "fromTable": "FactInternetSales",
+        "fromColumn": "OrderDateKey",
+        "toTable": "DimDate",
+        "toColumn": "DateKey"
+      },
+      {
+        "name": "57132e98-0b2e-4425-b5ab-d0c26a8d8871",
+        "fromTable": "FactInternetSales",
+        "fromColumn": "ProductKey",
+        "toTable": "DimProduct",
+        "toColumn": "ProductKey"
+      },
+      {
+        "name": "cbadcec5-0b9c-417f-ba72-8e13327863f1",
+        "fromTable": "DimGeography",
+        "fromColumn": "SalesTerritoryKey",
+        "toTable": "DimSalesTerritory",
+        "toColumn": "SalesTerritoryKey"
+      },
+      {
+        "name": "66459faf-5abb-4585-97f5-441bda34b372",
+        "fromTable": "FactInternetSales",
+        "fromColumn": "CustomerKey",
+        "toTable": "DimCustomer",
+        "toColumn": "CustomerKey"
+      },
+      {
+        "name": "782250ea-0b59-49f1-aedc-4a15099aa53e",
+        "fromTable": "FactResellerSales",
+        "fromColumn": "ShipDate",
+        "toTable": "DimDateShip",
+        "toColumn": "ShipDate"
+      }
+    ],
+    "perspectives": [
+      {
+        "name": "Lojas",
+        "tables": [
+          {
+            "name": "DimDate",
+            "columns": [
+              {
+                "name": "CalendarQuarter"
+              },
+              {
+                "name": "CalendarYear"
+              },
+              {
+                "name": "DateKey"
+              },
+              {
+                "name": "DayNumberOfMonth"
+              },
+              {
+                "name": "DayNumberOfWeek"
+              },
+              {
+                "name": "EnglishDayNameOfWeek"
+              },
+              {
+                "name": "EnglishMonthName"
+              },
+              {
+                "name": "FiscalQuarter"
+              },
+              {
+                "name": "FiscalYear"
+              },
+              {
+                "name": "FullDateAlternateKey"
+              },
+              {
+                "name": "MonthNumberOfYear"
+              },
+              {
+                "name": "Period"
+              },
+              {
+                "name": "PeriodNro"
+              }
+            ]
+          },
+          {
+            "name": "DimDateShip",
+            "columns": [
+              {
+                "name": "Ano"
+              },
+              {
+                "name": "Competencia"
+              },
+              {
+                "name": "CompetenciaNro"
+              },
+              {
+                "name": "Dia"
+              },
+              {
+                "name": "DiaSemana"
+              },
+              {
+                "name": "DiaSemanaNro"
+              },
+              {
+                "name": "Mês"
+              },
+              {
+                "name": "MesNro"
+              },
+              {
+                "name": "SemanaAno"
+              },
+              {
+                "name": "ShipDate"
+              },
+              {
+                "name": "Trimestre"
+              }
+            ]
+          },
+          {
+            "name": "DimEmployee",
+            "columns": [
+              {
+                "name": "DepartmentName"
+              },
+              {
+                "name": "Employee"
+              },
+              {
+                "name": "EmployeeKey"
+              },
+              {
+                "name": "EmployeeNationalIDAlternateKey"
+              },
+              {
+                "name": "HierarquiaCaminho"
+              },
+              {
+                "name": "Level1"
+              },
+              {
+                "name": "Level2"
+              },
+              {
+                "name": "Level3"
+              },
+              {
+                "name": "Level4"
+              },
+              {
+                "name": "ParentEmployeeKey"
+              },
+              {
+                "name": "ParentEmployeeNationalIDAlternateKey"
+              }
+            ],
+            "hierarchies": [
+              {
+                "name": "OrgLevels"
+              }
+            ]
+          },
+          {
+            "name": "DimProduct",
+            "columns": [
+              {
+                "name": "Class"
+              },
+              {
+                "name": "Color"
+              },
+              {
+                "name": "ListPrice"
+              },
+              {
+                "name": "ModelName"
+              },
+              {
+                "name": "ProductAlternateKey"
+              },
+              {
+                "name": "ProductCategory"
+              },
+              {
+                "name": "ProductDescription"
+              },
+              {
+                "name": "ProductKey"
+              },
+              {
+                "name": "ProductLine"
+              },
+              {
+                "name": "ProductName"
+              },
+              {
+                "name": "ProductSubCategory"
+              },
+              {
+                "name": "Size"
+              },
+              {
+                "name": "SizeRange"
+              },
+              {
+                "name": "StandardCost"
+              },
+              {
+                "name": "Style"
+              },
+              {
+                "name": "Weight"
+              }
+            ],
+            "hierarchies": [
+              {
+                "name": "Category-SubCategory-Product"
+              },
+              {
+                "name": "Model-Style-Class"
+              }
+            ],
+            "measures": [
+              {
+                "name": "Product - SKU - Total"
+              }
+            ]
+          },
+          {
+            "name": "DimReseller",
+            "columns": [
+              {
+                "name": "AddressLine1"
+              },
+              {
+                "name": "BusinessType"
+              },
+              {
+                "name": "GeographyKey"
+              },
+              {
+                "name": "NumberEmployees"
+              },
+              {
+                "name": "Phone"
+              },
+              {
+                "name": "ResellerAlternateKey"
+              },
+              {
+                "name": "ResellerKey"
+              },
+              {
+                "name": "ResellerName"
+              }
+            ]
+          },
+          {
+            "name": "FactResellerSales",
+            "columns": [
+              {
+                "name": "DiscountAmount"
+              },
+              {
+                "name": "EmployeeKey"
+              },
+              {
+                "name": "ExtendedAmount"
+              },
+              {
+                "name": "Freight"
+              },
+              {
+                "name": "OrderDate"
+              },
+              {
+                "name": "OrderDateKey"
+              },
+              {
+                "name": "OrderQuantity"
+              },
+              {
+                "name": "ProductKey"
+              },
+              {
+                "name": "ProductStandardCost"
+              },
+              {
+                "name": "ResellerKey"
+              },
+              {
+                "name": "SalesAmount"
+              },
+              {
+                "name": "SalesOrderLineNumber"
+              },
+              {
+                "name": "SalesOrderNumber"
+              },
+              {
+                "name": "ShipDate"
+              },
+              {
+                "name": "ShipDateKey"
+              },
+              {
+                "name": "TaxAmt"
+              },
+              {
+                "name": "TotalProductCost"
+              },
+              {
+                "name": "UnitPrice"
+              },
+              {
+                "name": "UnitPriceDiscountPct"
+              }
+            ],
+            "measures": [
+              {
+                "name": "Lojas - Total Vendido"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Portal",
+        "tables": [
+          {
+            "name": "DimCustomer",
+            "columns": [
+              {
+                "name": "AddressLine1"
+              },
+              {
+                "name": "AddressLine2"
+              },
+              {
+                "name": "BirthDate"
+              },
+              {
+                "name": "CommuteDistance"
+              },
+              {
+                "name": "CustomerAlternateKey"
+              },
+              {
+                "name": "CustomerKey"
+              },
+              {
+                "name": "DateFirstPurchase"
+              },
+              {
+                "name": "EmailAddress"
+              },
+              {
+                "name": "EnglishEducation"
+              },
+              {
+                "name": "EnglishOccupation"
+              },
+              {
+                "name": "FirstName"
+              },
+              {
+                "name": "FrenchEducation"
+              },
+              {
+                "name": "FrenchOccupation"
+              },
+              {
+                "name": "Gender"
+              },
+              {
+                "name": "GeographyKey"
+              },
+              {
+                "name": "HouseOwnerFlag"
+              },
+              {
+                "name": "LastName"
+              },
+              {
+                "name": "MaritalStatus"
+              },
+              {
+                "name": "MiddleName"
+              },
+              {
+                "name": "NameStyle"
+              },
+              {
+                "name": "NumberCarsOwned"
+              },
+              {
+                "name": "NumberChildrenAtHome"
+              },
+              {
+                "name": "Phone"
+              },
+              {
+                "name": "SpanishEducation"
+              },
+              {
+                "name": "SpanishOccupation"
+              },
+              {
+                "name": "Suffix"
+              },
+              {
+                "name": "Title"
+              },
+              {
+                "name": "TotalChildren"
+              },
+              {
+                "name": "YearlyIncome"
+              }
+            ]
+          },
+          {
+            "name": "DimDate",
+            "columns": [
+              {
+                "name": "CalendarQuarter"
+              },
+              {
+                "name": "CalendarYear"
+              },
+              {
+                "name": "DateKey"
+              },
+              {
+                "name": "DayNumberOfMonth"
+              },
+              {
+                "name": "DayNumberOfWeek"
+              },
+              {
+                "name": "EnglishDayNameOfWeek"
+              },
+              {
+                "name": "EnglishMonthName"
+              },
+              {
+                "name": "FiscalQuarter"
+              },
+              {
+                "name": "FiscalYear"
+              },
+              {
+                "name": "FullDateAlternateKey"
+              },
+              {
+                "name": "MonthNumberOfYear"
+              },
+              {
+                "name": "Period"
+              },
+              {
+                "name": "PeriodNro"
+              }
+            ]
+          },
+          {
+            "name": "DimDateShip",
+            "columns": [
+              {
+                "name": "Ano"
+              },
+              {
+                "name": "Competencia"
+              },
+              {
+                "name": "CompetenciaNro"
+              },
+              {
+                "name": "Dia"
+              },
+              {
+                "name": "DiaSemana"
+              },
+              {
+                "name": "DiaSemanaNro"
+              },
+              {
+                "name": "Mês"
+              },
+              {
+                "name": "MesNro"
+              },
+              {
+                "name": "SemanaAno"
+              },
+              {
+                "name": "ShipDate"
+              },
+              {
+                "name": "Trimestre"
+              }
+            ]
+          },
+          {
+            "name": "DimGeography",
+            "columns": [
+              {
+                "name": "City"
+              },
+              {
+                "name": "CountryRegionCode"
+              },
+              {
+                "name": "EnglishCountryRegionName"
+              },
+              {
+                "name": "GeoCity"
+              },
+              {
+                "name": "GeographyKey"
+              },
+              {
+                "name": "GeoState"
+              },
+              {
+                "name": "PostalCode"
+              },
+              {
+                "name": "SalesTerritoryKey"
+              },
+              {
+                "name": "StateProvinceCode"
+              },
+              {
+                "name": "StateProvinceName"
+              }
+            ]
+          },
+          {
+            "name": "DimProduct",
+            "columns": [
+              {
+                "name": "Class"
+              },
+              {
+                "name": "Color"
+              },
+              {
+                "name": "ListPrice"
+              },
+              {
+                "name": "ModelName"
+              },
+              {
+                "name": "ProductAlternateKey"
+              },
+              {
+                "name": "ProductCategory"
+              },
+              {
+                "name": "ProductDescription"
+              },
+              {
+                "name": "ProductKey"
+              },
+              {
+                "name": "ProductLine"
+              },
+              {
+                "name": "ProductName"
+              },
+              {
+                "name": "ProductSubCategory"
+              },
+              {
+                "name": "Size"
+              },
+              {
+                "name": "SizeRange"
+              },
+              {
+                "name": "StandardCost"
+              },
+              {
+                "name": "Style"
+              },
+              {
+                "name": "Weight"
+              }
+            ],
+            "hierarchies": [
+              {
+                "name": "Category-SubCategory-Product"
+              },
+              {
+                "name": "Model-Style-Class"
+              }
+            ],
+            "measures": [
+              {
+                "name": "Product - SKU - Total"
+              }
+            ]
+          },
+          {
+            "name": "FactInternetSales",
+            "columns": [
+              {
+                "name": "CarrierTrackingNumber"
+              },
+              {
+                "name": "CurrencyKey"
+              },
+              {
+                "name": "CustomerKey"
+              },
+              {
+                "name": "CustomerPONumber"
+              },
+              {
+                "name": "DiscountAmount"
+              },
+              {
+                "name": "DueDate"
+              },
+              {
+                "name": "DueDateKey"
+              },
+              {
+                "name": "ExtendedAmount"
+              },
+              {
+                "name": "Freight"
+              },
+              {
+                "name": "OrderDate"
+              },
+              {
+                "name": "OrderDateKey"
+              },
+              {
+                "name": "OrderQuantity"
+              },
+              {
+                "name": "ProductKey"
+              },
+              {
+                "name": "ProductStandardCost"
+              },
+              {
+                "name": "PromotionKey"
+              },
+              {
+                "name": "RevisionNumber"
+              },
+              {
+                "name": "SalesAmount"
+              },
+              {
+                "name": "SalesOrderLineNumber"
+              },
+              {
+                "name": "SalesOrderNumber"
+              },
+              {
+                "name": "SalesTerritoryKey"
+              },
+              {
+                "name": "ShipDate"
+              },
+              {
+                "name": "ShipDateKey"
+              },
+              {
+                "name": "TaxAmt"
+              },
+              {
+                "name": "TotalProductCost"
+              },
+              {
+                "name": "UnitPrice"
+              },
+              {
+                "name": "UnitPriceDiscountPct"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "annotations": [
+      {
+        "name": "ClientCompatibilityLevel",
+        "value": "700"
+      }
+    ]
+  },
+  "id": "SemanticModel"
+}
