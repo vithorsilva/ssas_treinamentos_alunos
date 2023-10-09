@@ -10,7 +10,7 @@
         "connectionDetails": {
           "protocol": "tds",
           "address": {
-            "server": "localhost",
+            "server": "srv-mw001-treinamentos.database.windows.net",
             "database": "AdventureWorksDW"
           },
           "authentication": null,
@@ -18,35 +18,10 @@
         },
         "credential": {
           "AuthenticationKind": "UsernamePassword",
-          "kind": "SQL",
-          "path": "localhost;AdventureWorksDW",
-          "Username": "SVC_BI_READ",
-          "EncryptConnection": false,
+          "Username": "USR_BI_READ",
+          "EncryptConnection": true,
           "PrivacySetting": "Organizational"
         }
-      },
-      {
-        "type": "structured",
-        "name": "cnXLS_Permissoes",
-        "connectionDetails": {
-          "protocol": "file",
-          "address": {
-            "path": "C:\\temp\\Permissoes.xlsx"
-          },
-          "authentication": null,
-          "query": null
-        },
-        "credential": {
-          "AuthenticationKind": "ServiceAccount",
-          "kind": "File",
-          "path": "c:\\temp\\permissoes.xlsx"
-        },
-        "contextExpression": [
-          "let",
-          "    #\"0001\" = Excel.Workbook(..., null, true)",
-          "in",
-          "    #\"0001\""
-        ]
       }
     ],
     "tables": [
@@ -399,74 +374,6 @@
                   "    r.[Freight]",
                   "from [dbo].[FactResellerSales] as r",
                   "where OrderDateKey BETWEEN 20130101 AND 20131231",
-                  "\")",
-                  "in",
-                  "    Source</RSQueryCommandText><RSQueryCommandType>Text</RSQueryCommandType><RSQueryDesignState></RSQueryDesignState>]]></AnnotationContent></Gemini>"
-                ]
-              }
-            ]
-          },
-          {
-            "name": "FACTRESELLERSALES_HOT",
-            "mode": "import",
-            "source": {
-              "type": "m",
-              "expression": [
-                "let",
-                "    Source = Value.NativeQuery(#\"cnSQL_AdventureWorksDW\", ",
-                "\"select ",
-                "\tr.[ProductKey],",
-                "    r.[OrderDateKey],",
-                "    r.[DueDateKey],",
-                "    r.[ShipDateKey],",
-                "    r.[ResellerKey],",
-                "    r.[EmployeeKey],",
-                "    r.[PromotionKey],r.[CurrencyKey],r.[SalesTerritoryKey],",
-                "    r.[SalesOrderNumber],",
-                "    r.[SalesOrderLineNumber],",
-                "    r.[OrderQuantity],",
-                "    r.[UnitPrice],",
-                "    r.[ExtendedAmount],",
-                "    r.[UnitPriceDiscountPct],",
-                "    r.[DiscountAmount],",
-                "    r.[ProductStandardCost],",
-                "    r.[TotalProductCost],",
-                "    r.[SalesAmount],",
-                "    r.[TaxAmt],",
-                "    r.[Freight]",
-                "from [dbo].[FactResellerSales_load] as r",
-                "\")",
-                "in",
-                "    Source"
-              ]
-            },
-            "annotations": [
-              {
-                "name": "QueryEditorSerialization",
-                "value": [
-                  "<?xml version=\"1.0\" encoding=\"UTF-16\"?><Gemini xmlns=\"QueryEditorSerialization\"><AnnotationContent><![CDATA[<RSQueryCommandText>let",
-                  "    Source = Value.NativeQuery(#\"cnSQL_AdventureWorksDW\", ",
-                  "\"select ",
-                  "\tr.[ProductKey],",
-                  "    r.[OrderDateKey],",
-                  "    r.[DueDateKey],",
-                  "    r.[ShipDateKey],",
-                  "    r.[ResellerKey],",
-                  "    r.[EmployeeKey],",
-                  "    r.[PromotionKey],r.[CurrencyKey],r.[SalesTerritoryKey],",
-                  "    r.[SalesOrderNumber],",
-                  "    r.[SalesOrderLineNumber],",
-                  "    r.[OrderQuantity],",
-                  "    r.[UnitPrice],",
-                  "    r.[ExtendedAmount],",
-                  "    r.[UnitPriceDiscountPct],",
-                  "    r.[DiscountAmount],",
-                  "    r.[ProductStandardCost],",
-                  "    r.[TotalProductCost],",
-                  "    r.[SalesAmount],",
-                  "    r.[TaxAmt],",
-                  "    r.[Freight]",
-                  "from [dbo].[FactResellerSales_load] as r",
                   "\")",
                   "in",
                   "    Source</RSQueryCommandText><RSQueryCommandType>Text</RSQueryCommandType><RSQueryDesignState></RSQueryDesignState>]]></AnnotationContent></Gemini>"
@@ -1474,39 +1381,6 @@
             }
           }
         ]
-      },
-      {
-        "name": "tPermissoes",
-        "isHidden": true,
-        "columns": [
-          {
-            "name": "EmpregadoLogin",
-            "dataType": "string",
-            "sourceColumn": "EmpregadoLogin"
-          },
-          {
-            "name": "SalesTerritoryID",
-            "dataType": "int64",
-            "sourceColumn": "SalesTerritoryID"
-          }
-        ],
-        "partitions": [
-          {
-            "name": "Partition",
-            "dataView": "full",
-            "source": {
-              "type": "m",
-              "expression": [
-                "let",
-                "    Source = cnXLS_Permissoes,",
-                "    tPermissoes_Table = Source{[Item=\"tPermissoes\",Kind=\"Table\"]}[Data],",
-                "    #\"Tipo Alterado\" = Table.TransformColumnTypes(tPermissoes_Table,{{\"EmpregadoLogin\", type text}, {\"SalesTerritoryID\", Int64.Type}})",
-                "in",
-                "    #\"Tipo Alterado\""
-              ]
-            }
-          }
-        ]
       }
     ],
     "relationships": [
@@ -1849,25 +1723,6 @@
                 "name": "Reseller - Total Sales"
               }
             ]
-          }
-        ]
-      }
-    ],
-    "roles": [
-      {
-        "name": "Leitura",
-        "modelPermission": "read",
-        "tablePermissions": [
-          {
-            "name": "DimSalesTerritory",
-            "filterExpression": [
-              "DimSalesTerritory[SalesTerritoryKey]=LOOKUPVALUE(tPermissoes[SalesTerritoryID], tPermissoes[EmpregadoLogin],USERNAME(), ",
-              "tPermissoes[SalesTerritoryID],DimSalesTerritory[SalesTerritoryKey])"
-            ]
-          },
-          {
-            "name": "tPermissoes",
-            "filterExpression": "FALSE()\t"
           }
         ]
       }
